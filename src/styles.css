@@ -1,0 +1,6 @@
+/* Styles for Twitch Ad Swap */
+
+/* Optional: ensure the video containers don't clip our fixed videos */
+.video-player {
+    position: relative;
+}
