@@ -772,6 +772,8 @@
                             titleEl.textContent = '✅ Publicité Contournée (Mode 360p)';
                         }
                         
+                        window.postMessage({ type: 'TNA_AD_BYPASSED' }, '*');
+                        
                         void noticeEl.offsetWidth; // Force reflow
                         
                         noticeEl.style.opacity = '1';

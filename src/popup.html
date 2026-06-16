@@ -102,6 +102,43 @@
             display: inline-block;
             animation: spin 1s linear infinite;
         }
+        .stats-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(145, 71, 255, 0.05);
+            border: 1px solid rgba(145, 71, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
+        }
+
+        .stats-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--twitch-purple);
+        }
+
+        .stats-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -113,9 +150,9 @@
 
         <div class="section">
             <div style="font-size: 14px; font-weight: 500; margin-bottom: 8px;">Bloqueur de publicité</div>
-            <div class="status-badge">
-                <div class="status-dot"></div>
-                Actif et Sécurisé
+            <div class="status-badge" id="main-status-badge">
+                <div class="status-dot" id="main-status-dot"></div>
+                <span id="main-status-text">Vérification...</span>
             </div>
             <div id="script-status" style="margin-top: 14px; font-size: 11px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
                 <span id="status-icon" class="status-spinner"></span>
@@ -130,8 +167,12 @@
             <code style="background: #000; padding: 6px 8px; border-radius: 4px; display: block; font-family: monospace; user-select: all; cursor: pointer; border: 1px solid var(--border-color); font-size: 11px; color: #ff47ff;" id="update-cmd">.\update.ps1</code>
         </div>
 
-        <div class="footer">
-            Stream de façon fluide sans interruption.
+        <div class="stats-section">
+            <div>
+                <div class="stats-number" id="ad-counter">0</div>
+                <div class="stats-label">Pubs contournées</div>
+            </div>
+            <button class="btn-reset" id="btn-reset" title="Remettre à zéro">Reset</button>
         </div>
     </div>
     <script src="popup.js"></script>

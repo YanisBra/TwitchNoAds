@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "TwitchNoAds",
+  "version": "23.0",
+  "description": "Bloque les publicités sur Twitch.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "TwitchNoAds"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.twitch.tv/*"
+  ]
+}
