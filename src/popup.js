@@ -2,125 +2,104 @@ const LOCAL_SCRIPT_URL = chrome.runtime.getURL('src/scripts/video-swap-new.js');
 const REMOTE_SCRIPT_URL = 'https://raw.githubusercontent.com/pixeltris/TwitchAdSolutions/master/video-swap-new/video-swap-new.user.js';
 const VERSION_REGEX = /const\s+ourTwitchAdSolutionsVersion\s*=\s*(\d+);/;
 
-async function checkUpdates() {
-    const statusIcon = document.getElementById('status-icon');
-    const statusText = document.getElementById('status-text');
-    const statusContainer = document.getElementById('script-status');
-    const mainBadge = document.getElementById('main-status-badge');
-    const mainDot = document.getElementById('main-status-dot');
-    const mainText = document.getElementById('main-status-text');
+const adsCountEl  = document.getElementById('adsCount');
+const resetBtn    = document.getElementById('resetBtn');
+const statusBadge = document.getElementById('statusBadge');
+const statusDot   = document.getElementById('statusDot');
+const statusText  = document.getElementById('statusText');
+const versionEl   = document.getElementById('versionText');
 
+/* ── Version (mise à jour via checkUpdates) ── */
+
+/* ── Affiche le compteur ── */
+function renderCount(n) {
+  if (adsCountEl) {
+    adsCountEl.textContent = n.toLocaleString('fr-FR');
+  }
+}
+
+/* ── Lecture depuis le storage ── */
+chrome.storage.local.get(['adsBypassed'], (data) => {
+  renderCount(data.adsBypassed ?? 0);
+});
+
+/* ── Reset ── */
+if (resetBtn) {
+  resetBtn.addEventListener('click', () => {
+    chrome.storage.local.set({ adsBypassed: 0 }, () => {
+      renderCount(0);
+    });
+  });
+}
+
+/* ── Storage listener for live updates ── */
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.adsBypassed) {
+        renderCount(changes.adsBypassed.newValue || 0);
+    }
+});
+
+/* ── Update checker ── */
+async function checkUpdates() {
     try {
-        // Fetch local version
         const localRes = await fetch(LOCAL_SCRIPT_URL);
         const localText = await localRes.text();
         const localMatch = localText.match(VERSION_REGEX);
         const localVersion = localMatch ? parseInt(localMatch[1], 10) : 0;
+        
+        if (versionEl && localVersion > 0) {
+            versionEl.textContent = `v${localVersion}`;
+        }
 
-        // Fetch remote version
         const remoteRes = await fetch(REMOTE_SCRIPT_URL + '?t=' + Date.now());
         const remoteText = await remoteRes.text();
         const remoteMatch = remoteText.match(VERSION_REGEX);
         const remoteVersion = remoteMatch ? parseInt(remoteMatch[1], 10) : 0;
 
-        console.log(`Version check - Local: ${localVersion}, Remote: ${remoteVersion}`);
-
         if (remoteVersion > localVersion) {
-            // Update available
-            if (mainBadge) {
-                mainBadge.style.background = 'rgba(255, 71, 71, 0.1)';
-                mainBadge.style.color = '#ff4747';
-                mainDot.style.backgroundColor = '#ff4747';
-                mainDot.style.boxShadow = '0 0 8px #ff4747';
-                mainText.textContent = 'Mise à jour requise';
+            if (statusBadge) {
+                statusBadge.style.background = 'rgba(255, 71, 71, 0.1)';
+                statusBadge.style.color = '#ff4747';
+                statusBadge.style.borderColor = 'rgba(255, 71, 71, 0.2)';
             }
-            statusIcon.className = '';
-            statusIcon.innerHTML = '⚠';
-            statusIcon.style.color = '#ff47ff';
-            statusIcon.style.fontWeight = 'bold';
-            
-            statusText.textContent = `Mise à jour disponible (v${remoteVersion})`;
-            statusContainer.style.color = '#ff47ff';
+            if (statusDot) {
+                statusDot.style.backgroundColor = '#ff4747';
+                statusDot.style.boxShadow = '0 0 8px #ff4747';
+            }
+            if (statusText) {
+                statusText.textContent = 'Mise à jour requise';
+            }
 
-            const container = document.getElementById('update-notification');
+            const container = document.getElementById('updateCard');
             const localVerSpan = document.getElementById('local-ver');
             const remoteVerSpan = document.getElementById('remote-ver');
 
-            localVerSpan.textContent = localVersion;
-            remoteVerSpan.textContent = remoteVersion;
-            container.style.display = 'block';
+            if (localVerSpan) localVerSpan.textContent = localVersion;
+            if (remoteVerSpan) remoteVerSpan.textContent = remoteVersion;
+            if (container) container.style.display = 'block';
         } else {
-            // Up to date
-            if (mainBadge) {
-                mainBadge.style.background = 'rgba(0, 245, 147, 0.1)';
-                mainBadge.style.color = '#00f593';
-                mainDot.style.backgroundColor = '#00f593';
-                mainDot.style.boxShadow = '0 0 8px #00f593';
-                mainText.textContent = 'Actif et à jour';
-            }
-            statusIcon.className = '';
-            statusIcon.innerHTML = '✓';
-            statusIcon.style.color = '#00f593';
-            statusIcon.style.fontWeight = 'bold';
-
-            statusText.textContent = `Extension à jour (v${localVersion})`;
-            statusContainer.style.color = 'var(--text-muted)';
+            if (statusText) statusText.textContent = 'Actif et à jour';
         }
     } catch (error) {
-        console.error("Failed to check for updates:", error);
-        if (statusIcon && statusText) {
-            statusIcon.className = '';
-            statusIcon.innerHTML = '⚠';
-            statusIcon.style.color = 'var(--text-muted)';
-            statusText.textContent = "Vérification impossible";
-        }
+        if (statusBadge) statusBadge.classList.add('inactive');
+        if (statusText) statusText.textContent = 'Vérification impossible';
     }
-}
-
-function loadAdCounter() {
-    chrome.storage.local.get(['adsBypassed'], (result) => {
-        const count = result.adsBypassed || 0;
-        const counterEl = document.getElementById('ad-counter');
-        if (counterEl) {
-            counterEl.textContent = count;
-        }
-    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     checkUpdates();
-    loadAdCounter();
 
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === 'local' && changes.adsBypassed) {
-            const counterEl = document.getElementById('ad-counter');
-            if (counterEl) {
-                counterEl.textContent = changes.adsBypassed.newValue || 0;
-            }
-        }
-    });
-
-    const resetBtn = document.getElementById('btn-reset');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            chrome.storage.local.set({ adsBypassed: 0 });
-        });
-    }
-
-    // Make the command code element copy-on-click
     const cmdElement = document.getElementById('update-cmd');
     if (cmdElement) {
         cmdElement.addEventListener('click', () => {
             navigator.clipboard.writeText(cmdElement.textContent).then(() => {
                 const originalText = cmdElement.textContent;
                 cmdElement.textContent = "Copié !";
-                cmdElement.style.color = "#00f593";
+                cmdElement.style.color = "var(--green, #22c55e)";
                 setTimeout(() => {
                     cmdElement.textContent = originalText;
                     cmdElement.style.color = "#ff47ff";
                 }, 1500);
-            }).catch(err => {
-                console.error("Could not copy text: ", err);
             });
         });
     }
