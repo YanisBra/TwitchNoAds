@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
     if ( /(^|\.)twitch\.tv$/.test(document.location.hostname) === false ) { return; }
     const ourTwitchAdSolutionsVersion = 23;// Used to prevent conflicts with outdated versions of the scripts
     if (typeof window.twitchAdSolutionsVersion !== 'undefined' && window.twitchAdSolutionsVersion >= ourTwitchAdSolutionsVersion) {
@@ -715,6 +715,9 @@
             return realFetch.apply(this, arguments);
         };
     }
+    let adToastTimeout = null;
+    let wasAdPlaying = false;
+
     function updateAdblockBanner(data) {
         const playerRootDiv = document.querySelector('.video-player');
         if (playerRootDiv != null) {
@@ -723,9 +726,33 @@
             if (adBlockDiv == null) {
                 adBlockDiv = document.createElement('div');
                 adBlockDiv.className = 'adblock-overlay';
-                adBlockDiv.innerHTML = '<div class="player-adblock-notice" style="color: white; background-color: rgba(0, 0, 0, 0.8); position: absolute; top: 0px; left: 0px; padding: 5px;"><p></p></div>';
-                adBlockDiv.style.display = 'none';
-                adBlockDiv.P = adBlockDiv.querySelector('p');
+                adBlockDiv.style.pointerEvents = 'none';
+                adBlockDiv.innerHTML = `
+                <div class="player-adblock-notice" style="
+                    position:absolute;
+                    top:20px;
+                    left:50%;
+                    transform:translateX(-50%) translateY(-50px);
+                    background:#1f1f23;
+                    color:white;
+                    padding:12px 20px;
+                    border-radius:4px;
+                    font-family:Inter,sans-serif;
+                    font-size:13px;
+                    font-weight:600;
+                    z-index:1000000;
+                    box-shadow:0 4px 12px rgba(0,0,0,0.5);
+                    border-left:4px solid #9147ff;
+                    transition:transform 0.4s,opacity 0.3s;
+                    opacity:0;
+                    white-space:nowrap;
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    pointer-events:none;
+                ">
+                    <span id="tna-title">✅ Publicité Contournée (Mode 360p)</span>
+                </div>`;
                 playerRootDiv.appendChild(adBlockDiv);
             }
             if (adBlockDiv != null) {
@@ -733,8 +760,37 @@
                     twitchPlayerAndState = getPlayerAndState();
                 }
                 const isLive = twitchPlayerAndState?.state?.props?.content?.type === 'live';
-                adBlockDiv.P.textContent = 'Blocking' + (data.isMidroll ? ' midroll' : '') + ' ads' + (data.isStrippingAdSegments ? ' (stripping)' : '');// + (data.numStrippedAdSegments > 0 ? ` (${data.numStrippedAdSegments})` : '');
-                adBlockDiv.style.display = data.hasAds && isLive ? 'block' : 'none';
+                
+                const noticeEl = adBlockDiv.querySelector('.player-adblock-notice');
+                const titleEl = adBlockDiv.querySelector('#tna-title');
+
+                if (data.hasAds && isLive) {
+                    if (!wasAdPlaying) {
+                        wasAdPlaying = true;
+                        
+                        if (titleEl) {
+                            titleEl.textContent = '✅ Publicité Contournée (Mode 360p)';
+                        }
+                        
+                        void noticeEl.offsetWidth; // Force reflow
+                        
+                        noticeEl.style.opacity = '1';
+                        noticeEl.style.transform = 'translateX(-50%) translateY(0)';
+                        
+                        if (adToastTimeout) clearTimeout(adToastTimeout);
+                        
+                        adToastTimeout = setTimeout(() => {
+                            noticeEl.style.opacity = '0';
+                            noticeEl.style.transform = 'translateX(-50%) translateY(-50px)';
+                        }, 6000);
+                    }
+                } else {
+                    wasAdPlaying = false;
+                    if (noticeEl && noticeEl.style.opacity !== '0') {
+                        noticeEl.style.opacity = '0';
+                        noticeEl.style.transform = 'translateX(-50%) translateY(-50px)';
+                    }
+                }
             }
         }
     }
