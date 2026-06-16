@@ -1,4 +1,4 @@
-# 🚀 TwitchFreeTurbo
+# 🚀 TwitchNoAds
 
 Extension Chrome en **Manifest V3** conçue pour contourner et bloquer 100 % des publicités sur Twitch sans altérer l'expérience utilisateur, en utilisant la méthode d'interception de Web Worker (`video-swap-new`).
 
@@ -19,7 +19,7 @@ Extension Chrome en **Manifest V3** conçue pour contourner et bloquer 100 % des
 4. Activez le **Mode développeur** (interrupteur en haut à droite).
 5. Cliquez sur le bouton **Charger l'extension non empaquetée** (Load unpacked).
 6. Sélectionnez le dossier du projet (celui qui contient le fichier `manifest.json`).
-7. **Épinglez** l'icône de **TwitchFreeTurbo** à votre barre d'outils pour un accès facile !
+7. **Épinglez** l'icône de **TwitchNoAds** à votre barre d'outils pour un accès facile !
 
 ---
 
@@ -34,4 +34,4 @@ Pour effectuer la mise à jour :
    powershell -ExecutionPolicy Bypass -File .\update.ps1
    ```
    *(Vous pouvez copier cette commande en un clic directement depuis le popup de l'extension)*
-3. Allez dans `chrome://extensions` et cliquez sur l'icône **Actualiser** (flèche circulaire) sur la carte de l'extension **TwitchFreeTurbo** pour appliquer les changements.
+3. Allez dans `chrome://extensions` et cliquez sur l'icône **Actualiser** (flèche circulaire) sur la carte de l'extension **TwitchNoAds** pour appliquer les changements.

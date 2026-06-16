@@ -1,4 +1,4 @@
-# Script de mise à jour automatique pour TwitchFreeTurbo
+# Script de mise à jour automatique pour TwitchNoAds
 $ErrorActionPreference = "Stop"
 
 $RemoteUrl = "https://raw.githubusercontent.com/pixeltris/TwitchAdSolutions/master/video-swap-new/video-swap-new-ublock-origin.js"

@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TwitchFreeTurbo",
+  "name": "TwitchNoAds",
   "version": "1.0",
   "description": "Swaps the ad video with an ad-free stream.",
   "permissions": [],
