@@ -56,111 +56,27 @@
         .section {
             background: var(--card-bg);
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 16px;
+            text-align: center;
             border: 1px solid var(--border-color);
-        }
-
-        .section-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .option {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .option:last-child {
-            margin-bottom: 0;
-        }
-
-        .option-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .option-label {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .option-desc {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* Modern Toggle Switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 34px;
-            height: 20px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #3f3f44;
-            transition: .3s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px;
-            width: 14px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--twitch-purple);
-        }
-
-        input:focus + .slider {
-            box-shadow: 0 0 1px var(--twitch-purple);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(14px);
         }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            background: rgba(145, 71, 255, 0.1);
-            color: var(--twitch-purple);
-            padding: 2px 8px;
-            border-radius: 12px;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(0, 245, 147, 0.1);
+            color: #00f593;
+            padding: 8px 16px;
+            border-radius: 20px;
             margin-top: 8px;
         }
 
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background-color: #00f593;
             border-radius: 50%;
             box-shadow: 0 0 8px #00f593;
@@ -168,29 +84,23 @@
 
         .footer {
             text-align: center;
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-top: 16px;
-        }
-
-        .btn-test {
-            width: 100%;
-            margin-top: 12px;
-            padding: 8px;
-            background: #2f2f35;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
             font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: background 0.2s;
+            color: var(--text-muted);
+            margin-top: 20px;
         }
 
-        .btn-test:hover {
-            background: #3f3f44;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-spinner {
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--text-muted);
+            border-top-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
         }
     </style>
 </head>
@@ -202,108 +112,27 @@
         </div>
 
         <div class="section">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
-                <div class="section-title" style="margin-bottom: 0;">Publicités bloquées</div>
-                <button id="resetStats" style="
-                    background: none;
-                    border: none;
-                    color: var(--text-muted);
-                    font-size: 9px;
-                    cursor: pointer;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    padding: 0;
-                ">Reset</button>
+            <div style="font-size: 14px; font-weight: 500; margin-bottom: 8px;">Bloqueur de publicité</div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                Actif et Sécurisé
             </div>
-            <div style="display: flex; gap: 10px;">
-                <div style="flex: 1; background: rgba(145, 71, 255, 0.1); padding: 10px; border-radius: 8px; text-align: center;">
-                    <div id="preRollCount" style="font-size: 20px; font-weight: 800; color: var(--twitch-purple);">0</div>
-                    <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Pre-rolls</div>
-                </div>
-                <div style="flex: 1; background: rgba(145, 71, 255, 0.1); padding: 10px; border-radius: 8px; text-align: center;">
-                    <div id="midRollCount" style="font-size: 20px; font-weight: 800; color: var(--twitch-purple);">0</div>
-                    <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Mid-rolls</div>
-                </div>
+            <div id="script-status" style="margin-top: 14px; font-size: 11px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <span id="status-icon" class="status-spinner"></span>
+                <span id="status-text">Recherche de mises à jour...</span>
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-title">Blocage des Publicités</div>
-            <div class="option">
-                <div class="option-info">
-                    <span class="option-label">Anti Pre-rolls</span>
-                    <span class="option-desc">Bloque les pubs au démarrage</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="bypassPreroll" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="option">
-                <div class="option-info">
-                    <span class="option-label">Anti Mid-rolls</span>
-                    <span class="option-desc">Bloque les pubs durant le live</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="bypassMidroll" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
+        <div id="update-notification" style="display: none; margin-top: 16px; background: rgba(145, 71, 255, 0.1); border: 1px solid var(--twitch-purple); border-radius: 8px; padding: 16px; font-size: 13px; text-align: center;">
+            <div style="color: var(--twitch-purple); font-weight: bold; margin-bottom: 6px; font-size: 14px;">Mise à jour disponible !</div>
+            <div style="color: var(--text-muted); margin-bottom: 8px;">Locale : v<span id="local-ver">?</span> &rarr; En ligne : v<span id="remote-ver">?</span></div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Lancez ce script dans votre terminal pour mettre à jour :</div>
+            <code style="background: #000; padding: 6px 8px; border-radius: 4px; display: block; font-family: monospace; user-select: all; cursor: pointer; border: 1px solid var(--border-color); font-size: 11px; color: #ff47ff;" id="update-cmd">.\update.ps1</code>
         </div>
 
-        <div class="section">
-            <div class="section-title">Méthode de Secours</div>
-            <div class="option">
-                <div class="option-info">
-                    <span class="option-label">Mode Incrustation</span>
-                    <span class="option-desc">Inverse Stream / Pub si besoin</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="swapVisuals" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
+        <div class="footer">
+            Stream de façon fluide sans interruption.
         </div>
-
-        <div class="section">
-            <div class="section-title">Fonctions Bonus</div>
-            <div class="option">
-                <div class="option-info">
-                    <span class="option-label">Auto-Points</span>
-                    <span class="option-desc">Récupère auto les points de chaîne</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="autoClaimPoints">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="option">
-                <div class="option-info">
-                    <span class="option-label">Dernière Chance</span>
-                    <span class="option-desc">Bouton ⏪ sur le lecteur</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="instantRewind" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Interface</div>
-            <div class="option">
-                <div class="option-info">
-                    <span class="option-label">Notifications</span>
-                    <span class="option-desc">Afficher les bulles de statut</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="showNotifications" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <button id="testNotification" class="btn-test">Tester la notification</button>
-        </div>
-
     </div>
     <script src="popup.js"></script>
 </body>
