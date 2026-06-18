@@ -103,6 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cmdElement = document.getElementById('update-cmd');
     if (cmdElement) {
+        // Détecter l'OS pour afficher la bonne commande
+        const isWindows = navigator.userAgent.toLowerCase().includes('win');
+        cmdElement.textContent = isWindows ? '.\\update.ps1' : './update.sh';
+
         cmdElement.addEventListener('click', () => {
             navigator.clipboard.writeText(cmdElement.textContent).then(() => {
                 const originalText = cmdElement.textContent;
