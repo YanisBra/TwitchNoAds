@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TwitchNoAds",
-  "version": "2.2",
+  "version": "2.3",
   "description": "Swaps the ad video with an ad-free stream.",
   "permissions": ["storage"],
   "host_permissions": [
@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.twitch.tv/*"],
-      "js": ["src/scripts/video-swap-new.js"],
+      "js": ["src/scripts/video-swap.js"],
       "run_at": "document_start",
       "world": "MAIN"
     },
@@ -22,12 +22,12 @@
     },
     {
       "matches": ["*://*.twitch.tv/*"],
-      "js": ["src/scripts/rewind.js"],
+      "js": ["src/scripts/player-controls.js", "src/scripts/channel-points.js"],
       "run_at": "document_idle"
     }
   ],
   "action": {
-    "default_popup": "src/popup.html"
+    "default_popup": "src/popup/popup.html"
   },
   "icons": {
     "16": "src/icons/icon16.png",

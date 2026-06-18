@@ -1,4 +1,4 @@
-const LOCAL_SCRIPT_URL = chrome.runtime.getURL('src/scripts/video-swap-new.js');
+const LOCAL_SCRIPT_URL = chrome.runtime.getURL('src/scripts/video-swap.js');
 const REMOTE_SCRIPT_URL = 'https://raw.githubusercontent.com/pixeltris/TwitchAdSolutions/master/video-swap-new/video-swap-new.user.js';
 const VERSION_REGEX = /const\s+ourTwitchAdSolutionsVersion\s*=\s*(\d+);/;
 

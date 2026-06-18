@@ -2,7 +2,7 @@
 $ErrorActionPreference = "Stop"
 
 $RemoteUrl = "https://raw.githubusercontent.com/pixeltris/TwitchAdSolutions/master/video-swap-new/video-swap-new-ublock-origin.js"
-$DestPath = Join-Path $PSScriptRoot "src\scripts\video-swap-new.js"
+$DestPath = Join-Path $PSScriptRoot "src\scripts\video-swap.js"
 
 Write-Host "Téléchargement de la dernière version du script de contournement..." -ForegroundColor Cyan
 
