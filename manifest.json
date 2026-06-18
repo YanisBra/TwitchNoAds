@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TwitchNoAds",
-  "version": "2.4",
-  "description": "Swaps the ad video with an ad-free stream.",
+  "version": "2.5",
+  "description": "Contourne 100% des publicités Twitch sans écran violet et optimise la consommation CPU/GPU en arrière-plan.",
   "permissions": ["storage"],
   "host_permissions": [
     "*://*.twitch.tv/*",

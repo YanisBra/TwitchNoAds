@@ -14,10 +14,10 @@ Extension Chrome en **Manifest V3** conçue pour contourner et bloquer 100 % des
   * Clique automatiquement sur les coffres de points bonus du chat dès qu'ils apparaissent.
   * Multi-langues et compatible avec les différents sélecteurs de Twitch (Français, Anglais).
   * Activé par défaut à l'installation, avec un interrupteur marche/arrêt directement accessible depuis la popup de l'extension.
-* **Économiseur de CPU & Données (Background Saver) :**
-  * Abaisse automatiquement la qualité vidéo à `160p` (ou équivalent) lorsque l'onglet Twitch est masqué pendant plus de 10 secondes.
-  * Restaure instantanément la qualité d'origine (ou mode auto) dès que l'onglet revient au premier plan.
-  * Économise la batterie, les ressources processeur (CPU/GPU) et la bande passante (4G/5G).
+* **Économiseur de CPU, GPU & Données (Background Saver) :**
+  * Abaisse automatiquement la qualité vidéo à `160p` (ou équivalent) et masque le chat Twitch lorsque l'onglet Twitch est masqué pendant plus de 10 secondes.
+  * Restaure instantanément la qualité d'origine (ou mode auto) et réaffiche le chat dès que l'onglet revient au premier plan.
+  * **Économie CPU & GPU drastique :** Le masquage du chat stoppe complètement les calculs de rendu (layout/paint) et d'émoticônes du chat Twitch. Le passage à 160p réduit à la fois le décodage vidéo et la bande passante (4G/5G).
   * Contrôle complet via un bouton marche/arrêt dans la popup (activé par défaut).
 * **Vérification des mises à jour :** La popup vérifie en temps réel s'il existe une nouvelle version du script de contournement sur le dépôt GitHub.
 * **Mise à jour en 1 clic :** Des scripts dédiés (PowerShell `update.ps1` pour Windows et Bash `update.sh` pour macOS/Linux) permettent de mettre à jour instantanément le code de contournement.

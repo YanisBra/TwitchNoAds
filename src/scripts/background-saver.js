@@ -5,6 +5,18 @@
 
     console.log('[TwitchNoAds] background-saver.js chargé en mode MAIN');
 
+    // Inject styles to hide the chat column and chat rooms under the tna-hidden class
+    const style = document.createElement('style');
+    style.id = 'tna-bg-saver-styles';
+    style.textContent = `
+        html.tna-hidden section[data-a-target="chat-room"],
+        html.tna-hidden .right-column,
+        html.tna-hidden .stream-chat {
+            display: none !important;
+        }
+    `;
+    (document.head || document.documentElement).appendChild(style);
+
     let autoBackgroundSaverEnabled = true;
     let lastState = 'visible';
 
@@ -53,12 +65,13 @@
 
     // Main action functions
     function apply160pQuality() {
-        console.log('[TwitchNoAds] Exécution du script de passage à 160p...');
+        // Hide Twitch chat by adding the class
+        document.documentElement.classList.add('tna-hidden');
+
         const player = getTwitchPlayer();
         
         if (player && typeof player.getQualities === 'function') {
             const qualities = player.getQualities();
-            console.log('[TwitchNoAds] Player trouvé. Qualités :', qualities.map(q => q.name || q.group));
             const quality160p = qualities.find(q => {
                 const name = q.name || q.group || '';
                 return name.startsWith('160p');
@@ -73,46 +86,56 @@
                 }
                 
                 player.setQuality(quality160p);
-                console.log('[TwitchNoAds] Qualité baissée à 160p. (Auto-qualité était :', window.tnaWasAutoQuality, ')');
+                console.log('[TwitchNoAds] Économiseur d\'arrière-plan : qualité abaissée à 160p, chat masqué.');
             } else {
-                console.log('[TwitchNoAds] Qualité 160p indisponible pour ce stream.');
+                console.log('[TwitchNoAds] Économiseur d\'arrière-plan : chat masqué (qualité 160p indisponible).');
             }
         } else {
-            console.log('[TwitchNoAds] Objet player Twitch introuvable pour passer à 160p.');
+            console.log('[TwitchNoAds] Économiseur d\'arrière-plan : chat masqué (lecteur vidéo introuvable).');
         }
     }
 
     function restoreOriginalQuality() {
-        console.log('[TwitchNoAds] Exécution du script de restauration de qualité...');
+        // Show Twitch chat by removing the class
+        document.documentElement.classList.remove('tna-hidden');
+
         const player = getTwitchPlayer();
         
         if (player) {
+            let restored = false;
             if (window.tnaWasAutoQuality) {
                 if (typeof player.setAutoQualityMode === 'function') {
                     player.setAutoQualityMode(true);
-                    console.log('[TwitchNoAds] Qualité restaurée en mode AUTO.');
+                    restored = true;
                 }
             } else if (window.tnaLastQualityName) {
                 const qualities = player.getQualities();
                 const targetQ = qualities.find(q => q.name === window.tnaLastQualityName || q.group === window.tnaLastQualityName);
                 if (targetQ) {
                     player.setQuality(targetQ);
-                    console.log('[TwitchNoAds] Qualité fixe restaurée à :', window.tnaLastQualityName);
+                    restored = true;
                 } else if (typeof player.setAutoQualityMode === 'function') {
                     player.setAutoQualityMode(true);
+                    restored = true;
                 }
             } else {
                 if (typeof player.setAutoQualityMode === 'function') {
                     player.setAutoQualityMode(true);
-                    console.log('[TwitchNoAds] Restauration par défaut en mode AUTO.');
+                    restored = true;
                 }
+            }
+            
+            if (restored) {
+                console.log('[TwitchNoAds] Économiseur d\'arrière-plan : qualité d\'origine et chat restaurés.');
+            } else {
+                console.log('[TwitchNoAds] Économiseur d\'arrière-plan : chat restauré.');
             }
             
             // Clean temp variables
             delete window.tnaWasAutoQuality;
             delete window.tnaLastQualityName;
         } else {
-            console.log('[TwitchNoAds] Objet player Twitch introuvable pour restaurer la qualité.');
+            console.log('[TwitchNoAds] Économiseur d\'arrière-plan : chat restauré (lecteur vidéo introuvable).');
         }
     }
 
@@ -123,13 +146,11 @@
         if (lastState === state) return;
         lastState = state;
 
-        console.log('[TwitchNoAds] Changement de visibilité reçu de l\'ISOLATED :', state, '| Option active ?', autoBackgroundSaverEnabled);
         if (!autoBackgroundSaverEnabled) return;
 
         if (state === 'hidden') {
             if (bgSaverTimeout) clearTimeout(bgSaverTimeout);
             
-            console.log('[TwitchNoAds] Passage en arrière-plan détecté. Qualité abaissée dans 10 secondes...');
             bgSaverTimeout = setTimeout(() => {
                 apply160pQuality();
                 isCurrently160p = true;
@@ -140,7 +161,6 @@
             if (bgSaverTimeout) {
                 clearTimeout(bgSaverTimeout);
                 bgSaverTimeout = null;
-                console.log('[TwitchNoAds] Retour au premier plan rapide (avant 10s) : transition annulée.');
             }
             
             if (isCurrently160p) {
@@ -157,7 +177,6 @@
         // Settings updates
         if (event.data && event.data.type === 'TNA_BG_SAVER_SETTING') {
             autoBackgroundSaverEnabled = event.data.enabled;
-            console.log('[TwitchNoAds] autoBackgroundSaver mis à jour en mode MAIN :', autoBackgroundSaverEnabled);
             
             if (!autoBackgroundSaverEnabled) {
                 if (bgSaverTimeout) {

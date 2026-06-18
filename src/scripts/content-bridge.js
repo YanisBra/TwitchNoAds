@@ -45,7 +45,6 @@ function triggerStateChange(state) {
 
     if (!autoBackgroundSaverEnabled) return;
 
-    console.log('[TwitchNoAds-Bridge] Visibilité changée en ISOLATED :', state);
     window.postMessage({ type: 'TNA_VISIBILITY_CHANGE', state: state }, '*');
 }
 
