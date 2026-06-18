@@ -213,6 +213,26 @@
         }
     }
 
+    function claimChannelPoints() {
+        chrome.storage.local.get(['autoClaimPoints'], (data) => {
+            const enabled = data.autoClaimPoints ?? true;
+            if (!enabled) return;
+
+            const claimBtn = 
+                document.querySelector('.community-points-summary > *:nth-child(2) button') ||
+                document.querySelector('[aria-label="Claim Bonus"]') ||
+                document.querySelector('[aria-label="Récupérer le bonus"]');
+                
+            if (claimBtn) {
+                claimBtn.click();
+                console.log('[TwitchNoAds] Points de chaîne récupérés !');
+            }
+        });
+    }
+
+    // Auto-claim channel points every 5 seconds
+    setInterval(claimChannelPoints, 5000);
+
     // Set up a MutationObserver to watch for the player being created/destroyed
     const observer = new MutationObserver((mutations) => {
         injectRewindButtons();

@@ -18,6 +18,16 @@
   </div>
 
   <div class="card">
+    <div class="stat-row">
+      <div class="stat-left">
+        <span class="stat-num" id="adsCount">0</span>
+        <p class="stat-label">Pubs contournées</p>
+      </div>
+      <button class="reset-btn" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <div class="card">
     <p class="card-label">Bloqueur de publicité</p>
     <div class="status-row">
       <div class="badge" id="statusBadge">
@@ -38,12 +48,15 @@
   </div>
 
   <div class="card">
-    <div class="stat-row">
-      <div class="stat-left">
-        <span class="stat-num" id="adsCount">0</span>
-        <p class="stat-label">Pubs contournées</p>
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <p class="toggle-label" style="margin-bottom: 2px; color: var(--text-primary); font-size: 14px; font-weight: 500;">Points de chaîne auto</p>
+        <p style="font-size: 11px; color: var(--text-muted);">Récolte automatiquement les bonus du chat</p>
       </div>
-      <button class="reset-btn" id="resetBtn">Reset</button>
+      <label class="switch">
+        <input type="checkbox" id="claimPointsToggle" />
+        <span class="slider"></span>
+      </label>
     </div>
   </div>
 

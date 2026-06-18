@@ -89,6 +89,18 @@ async function checkUpdates() {
 document.addEventListener('DOMContentLoaded', () => {
     checkUpdates();
 
+    const claimPointsToggle = document.getElementById('claimPointsToggle');
+    if (claimPointsToggle) {
+        chrome.storage.local.get(['autoClaimPoints'], (data) => {
+            // Option is enabled (true) by default
+            claimPointsToggle.checked = data.autoClaimPoints ?? true;
+        });
+
+        claimPointsToggle.addEventListener('change', () => {
+            chrome.storage.local.set({ autoClaimPoints: claimPointsToggle.checked });
+        });
+    }
+
     const cmdElement = document.getElementById('update-cmd');
     if (cmdElement) {
         cmdElement.addEventListener('click', () => {

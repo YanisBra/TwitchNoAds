@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TwitchNoAds",
-  "version": "2.1",
+  "version": "2.2",
   "description": "Swaps the ad video with an ad-free stream.",
   "permissions": ["storage"],
   "host_permissions": [
