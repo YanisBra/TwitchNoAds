@@ -101,6 +101,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const bgSaverToggle = document.getElementById('bgSaverToggle');
+    if (bgSaverToggle) {
+        chrome.storage.local.get(['autoBackgroundSaver'], (data) => {
+            // Option is enabled (true) by default
+            bgSaverToggle.checked = data.autoBackgroundSaver ?? true;
+        });
+
+        bgSaverToggle.addEventListener('change', () => {
+            chrome.storage.local.set({ autoBackgroundSaver: bgSaverToggle.checked });
+        });
+    }
+
     const cmdElement = document.getElementById('update-cmd');
     if (cmdElement) {
         // Détecter l'OS pour afficher la bonne commande
