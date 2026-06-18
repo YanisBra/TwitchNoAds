@@ -5,9 +5,17 @@ Extension Chrome en **Manifest V3** conçue pour contourner et bloquer 100 % des
 ---
 
 ## 🎯 Fonctionnalités
-* **Blocage ultra-fiable :** Utilise la méthode `video-swap-new` pour intercepter les Web Workers Twitch au tout début du chargement de la page (`document_start`).
-* **Vérification automatique des mises à jour :** Le popup de l'extension vérifie en temps réel s'il existe une nouvelle version du script de contournement sur le dépôt officiel.
-* **Mise à jour en 1 clic :** Un script PowerShell (`update.ps1`) permet de mettre à jour le script de contournement en local instantanément.
+* **Blocage de publicités ultra-fiable :** Utilise la méthode `video-swap-new` pour intercepter les Web Workers Twitch au tout début du chargement de la page (`document_start`), garantissant 100 % de blocage sans écran violet.
+* **Boutons de Retour Rapide (-30s) & Direct (Live) :**
+  * Parfaitement intégrés au lecteur vidéo Twitch, positionnés de façon naturelle entre le bouton Play/Pause et le contrôle de Volume.
+  * Reculez de 30 secondes dans le buffer de lecture ou revenez au direct instantanément d'un seul clic.
+  * **Fidélité visuelle Twitch :** Boutons transparents (sans bordures), survol circulaire gris translucide, retours tactiles au clic, et info-bulles (tooltips) personnalisées de style Twitch ("Reculer de 30s", "Retour au direct").
+* **Collecte automatique des Points de Chaîne :**
+  * Clique automatiquement sur les coffres de points bonus du chat dès qu'ils apparaissent.
+  * Multi-langues et compatible avec les différents sélecteurs de Twitch (Français, Anglais).
+  * Activé par défaut à l'installation, avec un interrupteur marche/arrêt directement accessible depuis la popup de l'extension.
+* **Vérification des mises à jour :** La popup vérifie en temps réel s'il existe une nouvelle version du script de contournement sur le dépôt GitHub.
+* **Mise à jour en 1 clic :** Un script PowerShell (`update.ps1`) permet de mettre à jour instantanément le code de contournement.
 
 ---
 
