@@ -15,7 +15,7 @@ Extension Chrome en **Manifest V3** conçue pour contourner et bloquer 100 % des
   * Multi-langues et compatible avec les différents sélecteurs de Twitch (Français, Anglais).
   * Activé par défaut à l'installation, avec un interrupteur marche/arrêt directement accessible depuis la popup de l'extension.
 * **Vérification des mises à jour :** La popup vérifie en temps réel s'il existe une nouvelle version du script de contournement sur le dépôt GitHub.
-* **Mise à jour en 1 clic :** Un script PowerShell (`update.ps1`) permet de mettre à jour instantanément le code de contournement.
+* **Mise à jour en 1 clic :** Des scripts dédiés (PowerShell `update.ps1` pour Windows et Bash `update.sh` pour macOS/Linux) permettent de mettre à jour instantanément le code de contournement.
 
 ---
 
@@ -36,10 +36,24 @@ Extension Chrome en **Manifest V3** conçue pour contourner et bloquer 100 % des
 L'extension vérifie automatiquement si une mise à jour est disponible lors de l'ouverture du popup. Si le script n'est plus à jour, un indicateur violet s'affiche et vous invite à lancer la mise à jour.
 
 Pour effectuer la mise à jour :
-1. Ouvrez un terminal (PowerShell) dans le dossier de l'extension.
-2. Exécutez la commande suivante :
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File .\update.ps1
-   ```
-   *(Vous pouvez copier cette commande en un clic directement depuis le popup de l'extension)*
+
+* **Sur Windows (PowerShell) :**
+  1. Ouvrez un terminal dans le dossier de l'extension.
+  2. Exécutez la commande suivante :
+     ```powershell
+     powershell -ExecutionPolicy Bypass -File .\update.ps1
+     ```
+     *(Vous pouvez copier cette commande en un clic directement depuis le popup de l'extension)*
+
+* **Sur macOS et Linux (Bash) :**
+  1. Ouvrez un terminal dans le dossier de l'extension.
+  2. Rendez le script exécutable (la première fois) :
+     ```bash
+     chmod +x update.sh
+     ```
+  3. Exécutez le script :
+     ```bash
+     ./update.sh
+     ```
+
 3. Allez dans `chrome://extensions` et cliquez sur l'icône **Actualiser** (flèche circulaire) sur la carte de l'extension **TwitchNoAds** pour appliquer les changements.
