@@ -17,7 +17,7 @@
     `;
     (document.head || document.documentElement).appendChild(style);
 
-    let autoBackgroundSaverEnabled = true;
+    let autoBackgroundSaverEnabled = false;
     let lastState = 'visible';
 
     // React Fiber traversal helper functions

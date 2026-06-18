@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "TwitchNoAds",
   "version": "2.5",
-  "description": "Contourne 100% des publicités Twitch sans écran violet et optimise la consommation CPU/GPU en arrière-plan.",
+  "description": "Optimise l'expérience de lecture Twitch en éliminant les interruptions de flux et en réduisant la charge CPU/GPU en arrière-plan.",
   "permissions": ["storage"],
   "host_permissions": [
     "*://*.twitch.tv/*",

@@ -92,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const claimPointsToggle = document.getElementById('claimPointsToggle');
     if (claimPointsToggle) {
         chrome.storage.local.get(['autoClaimPoints'], (data) => {
-            // Option is enabled (true) by default
-            claimPointsToggle.checked = data.autoClaimPoints ?? true;
+            // Option is disabled (false) by default
+            claimPointsToggle.checked = data.autoClaimPoints ?? false;
         });
 
         claimPointsToggle.addEventListener('change', () => {
@@ -104,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgSaverToggle = document.getElementById('bgSaverToggle');
     if (bgSaverToggle) {
         chrome.storage.local.get(['autoBackgroundSaver'], (data) => {
-            // Option is enabled (true) by default
-            bgSaverToggle.checked = data.autoBackgroundSaver ?? true;
+            // Option is disabled (false) by default
+            bgSaverToggle.checked = data.autoBackgroundSaver ?? false;
         });
 
         bgSaverToggle.addEventListener('change', () => {

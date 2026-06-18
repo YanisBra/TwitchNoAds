@@ -5,7 +5,7 @@
 
     function claimChannelPoints() {
         chrome.storage.local.get(['autoClaimPoints'], (data) => {
-            const enabled = data.autoClaimPoints ?? true;
+            const enabled = data.autoClaimPoints ?? false;
             if (!enabled) return;
 
             const claimBtn = 

@@ -15,7 +15,7 @@ window.addEventListener('message', (event) => {
     // Handshake for background saver setting
     if (event.data && event.data.type === 'TNA_GET_BG_SAVER_SETTING') {
         chrome.storage.local.get(['autoBackgroundSaver'], (data) => {
-            const enabled = data.autoBackgroundSaver ?? true;
+            const enabled = data.autoBackgroundSaver ?? false;
             window.postMessage({ type: 'TNA_BG_SAVER_SETTING', enabled: enabled }, '*');
         });
     }
@@ -24,16 +24,16 @@ window.addEventListener('message', (event) => {
 // Listen to storage changes to update the MAIN world in real time
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local' && changes.autoBackgroundSaver) {
-        const enabled = changes.autoBackgroundSaver.newValue ?? true;
+        const enabled = changes.autoBackgroundSaver.newValue ?? false;
         autoBackgroundSaverEnabled = enabled;
         window.postMessage({ type: 'TNA_BG_SAVER_SETTING', enabled: enabled }, '*');
     }
 });
 
 // Cache setting value to respond quickly
-let autoBackgroundSaverEnabled = true;
+let autoBackgroundSaverEnabled = false;
 chrome.storage.local.get(['autoBackgroundSaver'], (data) => {
-    autoBackgroundSaverEnabled = data.autoBackgroundSaver ?? true;
+    autoBackgroundSaverEnabled = data.autoBackgroundSaver ?? false;
 });
 
 // Listener for visibility changes in ISOLATED world (immune to page script hijacking)
