@@ -23,6 +23,7 @@
     let processDebounce = null;
     let draggedUsername = null;
     let autoExpandAttempts = 0; // allow up to 5 clicks on "Afficher plus"
+    let initialized = false;
 
     // ── CSS ─────────────────────────────────────────────────────────────────────
     function injectStyles() {
@@ -452,6 +453,7 @@
 
     // ── Bootstrap: retry until sidebar is rendered ───────────────────────────────
     function tryInit(attempts) {
+        if (!initialized) return;
         attempts = attempts || 0;
         const links = getChannelLinks();
         if (links.length > 0) {
@@ -466,12 +468,68 @@
     }
 
     function init() {
-        injectStyles();
-        chrome.storage.local.get(['pinnedStreamers'], data => {
+        if (initialized) return;
+        chrome.storage.local.get(['enableSidebarPins', 'pinnedStreamers'], data => {
+            const enabled = data.enableSidebarPins ?? false;
+            if (!enabled) {
+                console.log('[TwitchNoAds] sidebar-pins désactivé par configuration.');
+                return;
+            }
+            initialized = true;
+            injectStyles();
             pinnedStreamers = data.pinnedStreamers || [];
             tryInit(0);
         });
     }
+
+    function cleanup() {
+        if (!initialized) return;
+        initialized = false;
+
+        if (observer) {
+            observer.disconnect();
+            observer = null;
+        }
+        if (processDebounce) {
+            clearTimeout(processDebounce);
+            processDebounce = null;
+        }
+
+        const style = document.getElementById(STYLE_ID);
+        if (style) style.remove();
+
+        document.querySelectorAll('.tna-pin-btn').forEach(btn => btn.remove());
+
+        const cards = document.querySelectorAll(`[${CARD_ATTR}]`);
+        cards.forEach(card => {
+            card.removeAttribute(CARD_ATTR);
+            card.removeAttribute(PINNED_ATTR);
+            card.removeAttribute('data-tna-offline');
+            card.removeAttribute('draggable');
+            card.style.order = '';
+
+            const parent = card.parentElement;
+            if (parent) {
+                parent.style.display = '';
+                parent.style.flexDirection = '';
+            }
+        });
+
+        autoExpandAttempts = 0;
+        console.log('[TwitchNoAds] sidebar-pins désactivé et nettoyé.');
+    }
+
+    // Listen for storage changes to support live toggling
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace === 'local' && changes.enableSidebarPins) {
+            const enabled = changes.enableSidebarPins.newValue ?? false;
+            if (enabled) {
+                init();
+            } else {
+                cleanup();
+            }
+        }
+    });
 
     // Wait for the page to be ready, then add a small delay for React hydration
     if (document.readyState === 'loading') {

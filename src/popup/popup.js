@@ -113,6 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const sidebarPinsToggle = document.getElementById('sidebarPinsToggle');
+    if (sidebarPinsToggle) {
+        chrome.storage.local.get(['enableSidebarPins'], (data) => {
+            // Option is disabled (false) by default
+            sidebarPinsToggle.checked = data.enableSidebarPins ?? false;
+        });
+
+        sidebarPinsToggle.addEventListener('change', () => {
+            chrome.storage.local.set({ enableSidebarPins: sidebarPinsToggle.checked });
+        });
+    }
+
     const cmdElement = document.getElementById('update-cmd');
     if (cmdElement) {
         // Détecter l'OS pour afficher la bonne commande
