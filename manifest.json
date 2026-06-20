@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TwitchNoAds",
-  "version": "2.5",
+  "version": "2.6",
   "description": "Optimise l'expérience de lecture Twitch en éliminant les interruptions de flux et en réduisant la charge CPU/GPU en arrière-plan.",
   "permissions": ["storage"],
   "host_permissions": [
@@ -22,7 +22,7 @@
     },
     {
       "matches": ["*://*.twitch.tv/*"],
-      "js": ["src/scripts/player-controls.js", "src/scripts/channel-points.js"],
+      "js": ["src/scripts/player-controls.js", "src/scripts/channel-points.js", "src/scripts/sidebar-pins.js"],
       "run_at": "document_idle"
     },
     {
@@ -42,7 +42,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["src/assets/live.png", "src/assets/rewind.png"],
+      "resources": ["src/assets/live.png", "src/assets/rewind.png", "src/assets/Pin.png"],
       "matches": ["*://*.twitch.tv/*"]
     }
   ]
