@@ -113,6 +113,11 @@
     outline: 2px dashed #9147ff !important;
     outline-offset: -2px;
 }
+
+/* Hide offline channels */
+[data-tna-offline="true"] {
+    display: none !important;
+}
 `;
         (document.head || document.documentElement).appendChild(s);
     }
@@ -311,6 +316,13 @@
 
         const cardRow = getCardRow(linkEl);
         if (!cardRow || cardRow === document.body || cardRow === document.documentElement) return;
+
+        // Offline check
+        if (!isLive(cardRow)) {
+            cardRow.setAttribute('data-tna-offline', 'true');
+        } else {
+            cardRow.removeAttribute('data-tna-offline');
+        }
 
         const existing = cardRow.getAttribute(CARD_ATTR);
 
