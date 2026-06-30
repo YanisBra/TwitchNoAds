@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TwitchNoAds",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "description": "Optimise l'expérience de lecture Twitch en éliminant les interruptions de flux et en réduisant la charge CPU/GPU en arrière-plan.",
   "permissions": ["storage"],
   "host_permissions": [

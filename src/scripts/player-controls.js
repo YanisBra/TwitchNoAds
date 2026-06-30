@@ -5,6 +5,7 @@
 
     const REWIND_30S_ID = 'tna-rewind-30s';
     const GO_LIVE_ID = 'tna-go-live';
+    let rewindSeconds = 30;
 
     // Get URLs for the assets from the extension
     const imgRewindUrl = chrome.runtime.getURL('src/assets/rewind.png');
@@ -73,11 +74,11 @@
         }
     }
 
-    function createButton(id, labelText, seconds) {
+    function createButton(id) {
         const btn = document.createElement('button');
         btn.id = id;
         btn.className = 'ScCoreButton-sc-ocjdkq-0 ScCoreButtonText-sc-ocjdkq-3 ibtqAh dXoNnI';
-        btn.setAttribute('aria-label', labelText);
+        btn.setAttribute('aria-label', `Reculer de ${rewindSeconds}s`);
         
         btn.style.margin = '0 2px';
         btn.style.display = 'flex';
@@ -98,7 +99,7 @@
         btn.addEventListener('mouseenter', () => {
             btn.style.opacity = '1';
             btn.style.background = 'rgba(255, 255, 255, 0.15)';
-            showTooltip(btn, labelText);
+            showTooltip(btn, `Reculer de ${rewindSeconds}s`);
         });
         btn.addEventListener('mouseleave', () => {
             btn.style.opacity = '0.8';
@@ -109,7 +110,7 @@
         btn.addEventListener('click', () => {
             const video = document.querySelector('video');
             if (video) {
-                video.currentTime -= seconds;
+                video.currentTime -= rewindSeconds;
                 
                 // Visual feedback
                 btn.style.opacity = '0.4';
@@ -198,7 +199,7 @@
                     }
                 }
                 
-                const btn30 = hasBtn30 || createButton(REWIND_30S_ID, 'Reculer de 30s', 30);
+                const btn30 = hasBtn30 || createButton(REWIND_30S_ID);
                 const btnLive = hasBtnLive || createLiveButton();
                 
                 if (targetToInsertBefore) {
@@ -221,6 +222,26 @@
     observer.observe(document.body, {
         childList: true,
         subtree: true
+    });
+
+    // Fetch initial rewind duration
+    chrome.storage.local.get(['rewindDuration'], (data) => {
+        rewindSeconds = data.rewindDuration ?? 30;
+        const btn = document.getElementById(REWIND_30S_ID);
+        if (btn) {
+            btn.setAttribute('aria-label', `Reculer de ${rewindSeconds}s`);
+        }
+    });
+
+    // Listen to changes in the rewind duration
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace === 'local' && changes.rewindDuration) {
+            rewindSeconds = changes.rewindDuration.newValue ?? 30;
+            const btn = document.getElementById(REWIND_30S_ID);
+            if (btn) {
+                btn.setAttribute('aria-label', `Reculer de ${rewindSeconds}s`);
+            }
+        }
     });
 
     // Initial check just in case it's already there

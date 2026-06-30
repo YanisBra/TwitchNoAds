@@ -143,4 +143,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    const rewindSlider = document.getElementById('rewindSlider');
+    const rewindVal = document.getElementById('rewindVal');
+    if (rewindSlider && rewindVal) {
+        chrome.storage.local.get(['rewindDuration'], (data) => {
+            const val = data.rewindDuration ?? 30;
+            rewindSlider.value = val;
+            rewindVal.textContent = val + 's';
+        });
+
+        rewindSlider.addEventListener('input', () => {
+            const val = parseInt(rewindSlider.value, 10);
+            rewindVal.textContent = val + 's';
+            chrome.storage.local.set({ rewindDuration: val });
+        });
+    }
 });
