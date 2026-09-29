@@ -372,7 +372,8 @@
                 scheduleProcess();
             }
         });
-        observer.observe(document.body, { childList: true, subtree: true });
+        const target = document.querySelector('[data-a-target="side-nav-bar"]') || document.body;
+        observer.observe(target, { childList: true, subtree: true });
     }
 
     // ── Auto-expand "Afficher plus" if a pinned streamer is hidden ────────────────

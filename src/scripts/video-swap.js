@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
     if ( /(^|\.)twitch\.tv$/.test(document.location.hostname) === false ) { return; }
     const ourTwitchAdSolutionsVersion = 23;// Used to prevent conflicts with outdated versions of the scripts
     if (typeof window.twitchAdSolutionsVersion !== 'undefined' && window.twitchAdSolutionsVersion >= ourTwitchAdSolutionsVersion) {
@@ -715,43 +715,68 @@
             return realFetch.apply(this, arguments);
         };
     }
-        let adToastTimeout = null;
     let wasAdPlaying = false;
+
+    function ensureOverlayStyles() {
+        if (!document.getElementById('tna-overlay-style')) {
+            const s = document.createElement('style');
+            s.id = 'tna-overlay-style';
+            s.textContent = `
+                @keyframes tnaPulseDot {
+                    0%, 100% { opacity: 1; transform: scale(1); }
+                    50% { opacity: 0.35; transform: scale(0.9); }
+                }
+            `;
+            (document.head || document.documentElement).appendChild(s);
+        }
+    }
 
     function updateAdblockBanner(data) {
         const playerRootDiv = document.querySelector('.video-player');
         if (playerRootDiv != null) {
-            let adBlockDiv = null;
-            adBlockDiv = playerRootDiv.querySelector('.adblock-overlay');
+            ensureOverlayStyles();
+            let adBlockDiv = playerRootDiv.querySelector('.adblock-overlay');
             if (adBlockDiv == null) {
                 adBlockDiv = document.createElement('div');
                 adBlockDiv.className = 'adblock-overlay';
                 adBlockDiv.style.pointerEvents = 'none';
                 adBlockDiv.innerHTML = `
                 <div class="player-adblock-notice" style="
-                    position:absolute;
-                    top:20px;
-                    left:50%;
-                    transform:translateX(-50%) translateY(-50px);
-                    background:#1f1f23;
-                    color:white;
-                    padding:12px 20px;
-                    border-radius:4px;
-                    font-family:Inter,sans-serif;
-                    font-size:13px;
-                    font-weight:600;
-                    z-index:1000000;
-                    box-shadow:0 4px 12px rgba(0,0,0,0.5);
-                    border-left:4px solid #9147ff;
-                    transition:transform 0.4s,opacity 0.3s;
-                    opacity:0;
-                    white-space:nowrap;
-                    display:flex;
-                    align-items:center;
-                    gap:10px;
-                    pointer-events:none;
+                    position: absolute;
+                    top: 18px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(-50px);
+                    background: rgba(28, 25, 40, 0.92);
+                    backdrop-filter: blur(8px);
+                    -webkit-backdrop-filter: blur(8px);
+                    border: 1px solid rgba(145, 71, 255, 0.35);
+                    border-radius: 20px;
+                    padding: 7px 16px;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+                    font-size: 13px;
+                    font-weight: 600;
+                    z-index: 1000000;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(145, 71, 255, 0.2);
+                    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+                    opacity: 0;
+                    white-space: nowrap;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    pointer-events: none;
+                    user-select: none;
                 ">
-                    <span id="tna-title">\u2705 Publicit\u00e9 Contourn\u00e9e (Mode 360p)</span>
+                    <span class="tna-dot" style="
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+                        background: #9147ff;
+                        box-shadow: 0 0 8px #9147ff;
+                        flex-shrink: 0;
+                        display: inline-block;
+                        animation: tnaPulseDot 2.4s ease-in-out infinite;
+                    "></span>
+                    <span id="tna-title" style="color: #c084fc; font-weight: 600; letter-spacing: -0.01em;">Contournement de pub</span>
                 </div>`;
                 playerRootDiv.appendChild(adBlockDiv);
             }
@@ -760,32 +785,16 @@
                     twitchPlayerAndState = getPlayerAndState();
                 }
                 const isLive = twitchPlayerAndState?.state?.props?.content?.type === 'live';
-                
                 const noticeEl = adBlockDiv.querySelector('.player-adblock-notice');
-                const titleEl = adBlockDiv.querySelector('#tna-title');
 
                 if (data.hasAds && isLive) {
                     if (!wasAdPlaying) {
                         wasAdPlaying = true;
-                        
-                        if (titleEl) {
-                            titleEl.textContent = '\u2705 Publicit\u00e9 Contourn\u00e9e (Mode 360p)';
-                        }
-                        
                         window.postMessage({ type: 'TNA_AD_BYPASSED' }, '*');
-                        
-                        void noticeEl.offsetWidth; // Force reflow
-                        
-                        noticeEl.style.opacity = '1';
-                        noticeEl.style.transform = 'translateX(-50%) translateY(0)';
-                        
-                        if (adToastTimeout) clearTimeout(adToastTimeout);
-                        
-                        adToastTimeout = setTimeout(() => {
-                            noticeEl.style.opacity = '0';
-                            noticeEl.style.transform = 'translateX(-50%) translateY(-50px)';
-                        }, 10000);
                     }
+                    void noticeEl.offsetWidth; // Force reflow
+                    noticeEl.style.opacity = '1';
+                    noticeEl.style.transform = 'translateX(-50%) translateY(0)';
                 } else {
                     wasAdPlaying = false;
                     if (noticeEl && noticeEl.style.opacity !== '0') {
@@ -797,7 +806,9 @@
         }
     }function monitorLiveStatus() {
         if (!twitchPlayerAndState?.player?.core || !twitchPlayerAndState?.state) {
-            twitchPlayerAndState = getPlayerAndState();
+            if (document.querySelector('.video-player')) {
+                twitchPlayerAndState = getPlayerAndState();
+            }
         }
         const isLive = twitchPlayerAndState?.state?.props?.content?.type === 'live';
         if (!isLive) {
