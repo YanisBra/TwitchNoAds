@@ -718,6 +718,20 @@
         let adToastTimeout = null;
     let wasAdPlaying = false;
 
+    function ensureOverlayStyles() {
+        if (!document.getElementById('tna-overlay-style')) {
+            const s = document.createElement('style');
+            s.id = 'tna-overlay-style';
+            s.textContent = `
+                @keyframes tnaPulseDot {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.35; }
+                }
+            `;
+            (document.head || document.documentElement).appendChild(s);
+        }
+    }
+
     function updateAdblockBanner(data) {
         const playerRootDiv = document.querySelector('.video-player');
         if (playerRootDiv != null) {
@@ -751,7 +765,7 @@
                     pointer-events: none;
                     user-select: none;
                 ">
-                    <span style="
+                    <span id="tna-dot" style="
                         width: 8px;
                         height: 8px;
                         border-radius: 50%;
@@ -771,17 +785,20 @@
                 const isLive = twitchPlayerAndState?.state?.props?.content?.type === 'live';
                 
                 const noticeEl = adBlockDiv.querySelector('.player-adblock-notice');
-                const titleEl = adBlockDiv.querySelector('#tna-title');
+                const dotEl = adBlockDiv.querySelector('#tna-dot');
 
                 if (data.hasAds && isLive) {
                     if (!wasAdPlaying) {
                         wasAdPlaying = true;
+                        ensureOverlayStyles();
+                        if (dotEl) dotEl.style.animation = 'tnaPulseDot 2.4s ease-in-out infinite';
                         window.postMessage({ type: 'TNA_AD_BYPASSED' }, '*');
                         noticeEl.style.opacity = '1';
                         noticeEl.style.transform = 'translateX(-50%) translateY(0)';
                     }
                 } else {
                     wasAdPlaying = false;
+                    if (dotEl) dotEl.style.animation = 'none';
                     if (noticeEl && noticeEl.style.opacity !== '0') {
                         noticeEl.style.opacity = '0';
                         noticeEl.style.transform = 'translateX(-50%) translateY(-50px)';
@@ -789,7 +806,8 @@
                 }
             }
         }
-    }function monitorLiveStatus() {
+    }
+    function monitorLiveStatus() {
         if (!twitchPlayerAndState?.player?.core || !twitchPlayerAndState?.state) {
             twitchPlayerAndState = getPlayerAndState();
         }
