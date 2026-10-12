@@ -1,4 +1,4 @@
-(function() {
+﻿(function() {
     if ( /(^|\.)twitch\.tv$/.test(document.location.hostname) === false ) { return; }
     const ourTwitchAdSolutionsVersion = 23;// Used to prevent conflicts with outdated versions of the scripts
     if (typeof window.twitchAdSolutionsVersion !== 'undefined' && window.twitchAdSolutionsVersion >= ourTwitchAdSolutionsVersion) {
@@ -715,27 +715,14 @@
             return realFetch.apply(this, arguments);
         };
     }
+        let adToastTimeout = null;
     let wasAdPlaying = false;
-
-    function ensureOverlayStyles() {
-        if (!document.getElementById('tna-overlay-style')) {
-            const s = document.createElement('style');
-            s.id = 'tna-overlay-style';
-            s.textContent = `
-                @keyframes tnaPulseDot {
-                    0%, 100% { opacity: 1; transform: scale(1); }
-                    50% { opacity: 0.35; transform: scale(0.9); }
-                }
-            `;
-            (document.head || document.documentElement).appendChild(s);
-        }
-    }
 
     function updateAdblockBanner(data) {
         const playerRootDiv = document.querySelector('.video-player');
         if (playerRootDiv != null) {
-            ensureOverlayStyles();
-            let adBlockDiv = playerRootDiv.querySelector('.adblock-overlay');
+            let adBlockDiv = null;
+            adBlockDiv = playerRootDiv.querySelector('.adblock-overlay');
             if (adBlockDiv == null) {
                 adBlockDiv = document.createElement('div');
                 adBlockDiv.className = 'adblock-overlay';
@@ -746,18 +733,16 @@
                     top: 18px;
                     left: 50%;
                     transform: translateX(-50%) translateY(-50px);
-                    background: rgba(28, 25, 40, 0.92);
-                    backdrop-filter: blur(8px);
-                    -webkit-backdrop-filter: blur(8px);
-                    border: 1px solid rgba(145, 71, 255, 0.35);
+                    background: #18181b;
+                    border: 1px solid rgba(145, 71, 255, 0.4);
                     border-radius: 20px;
                     padding: 7px 16px;
                     font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
                     font-size: 13px;
                     font-weight: 600;
                     z-index: 1000000;
-                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(145, 71, 255, 0.2);
-                    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                    transition: transform 0.35s ease, opacity 0.3s ease;
                     opacity: 0;
                     white-space: nowrap;
                     display: inline-flex;
@@ -766,15 +751,14 @@
                     pointer-events: none;
                     user-select: none;
                 ">
-                    <span class="tna-dot" style="
+                    <span style="
                         width: 8px;
                         height: 8px;
                         border-radius: 50%;
                         background: #9147ff;
-                        box-shadow: 0 0 8px #9147ff;
+                        box-shadow: 0 0 6px #9147ff;
                         flex-shrink: 0;
                         display: inline-block;
-                        animation: tnaPulseDot 2.4s ease-in-out infinite;
                     "></span>
                     <span id="tna-title" style="color: #c084fc; font-weight: 600; letter-spacing: -0.01em;">Contournement de pub</span>
                 </div>`;
@@ -785,16 +769,17 @@
                     twitchPlayerAndState = getPlayerAndState();
                 }
                 const isLive = twitchPlayerAndState?.state?.props?.content?.type === 'live';
+                
                 const noticeEl = adBlockDiv.querySelector('.player-adblock-notice');
+                const titleEl = adBlockDiv.querySelector('#tna-title');
 
                 if (data.hasAds && isLive) {
                     if (!wasAdPlaying) {
                         wasAdPlaying = true;
                         window.postMessage({ type: 'TNA_AD_BYPASSED' }, '*');
+                        noticeEl.style.opacity = '1';
+                        noticeEl.style.transform = 'translateX(-50%) translateY(0)';
                     }
-                    void noticeEl.offsetWidth; // Force reflow
-                    noticeEl.style.opacity = '1';
-                    noticeEl.style.transform = 'translateX(-50%) translateY(0)';
                 } else {
                     wasAdPlaying = false;
                     if (noticeEl && noticeEl.style.opacity !== '0') {
@@ -806,9 +791,7 @@
         }
     }function monitorLiveStatus() {
         if (!twitchPlayerAndState?.player?.core || !twitchPlayerAndState?.state) {
-            if (document.querySelector('.video-player')) {
-                twitchPlayerAndState = getPlayerAndState();
-            }
+            twitchPlayerAndState = getPlayerAndState();
         }
         const isLive = twitchPlayerAndState?.state?.props?.content?.type === 'live';
         if (!isLive) {

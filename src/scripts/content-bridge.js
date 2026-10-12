@@ -1,18 +1,14 @@
-let cachedBypassedCount = 0;
-chrome.storage.local.get(['adsBypassed'], (data) => {
-    cachedBypassedCount = data.adsBypassed ?? 0;
-});
-
 window.addEventListener('message', (event) => {
     if (event.source !== window) return;
 
     if (event.data && event.data.type === 'TNA_AD_BYPASSED') {
-        cachedBypassedCount++;
-        chrome.storage.local.set({ adsBypassed: cachedBypassedCount });
+        chrome.storage.local.get(['adsBypassed'], (result) => {
+            let count = result.adsBypassed || 0;
+            chrome.storage.local.set({ adsBypassed: count + 1 });
+        });
     }
 
     if (event.data && event.data.type === 'TNA_RESET_COUNTER') {
-        cachedBypassedCount = 0;
         chrome.storage.local.set({ adsBypassed: 0 });
     }
 

@@ -215,18 +215,8 @@
     }
 
     // Set up a MutationObserver to watch for the player being created/destroyed
-    let injectDebounce = null;
-    const observer = new MutationObserver(() => {
-        const hasBtn30 = document.getElementById(REWIND_30S_ID);
-        const hasBtnLive = document.getElementById(GO_LIVE_ID);
-        if (hasBtn30 && hasBtnLive && hasBtn30.isConnected && hasBtnLive.isConnected) {
-            return;
-        }
-        if (injectDebounce) return;
-        injectDebounce = setTimeout(() => {
-            injectDebounce = null;
-            injectRewindButtons();
-        }, 200);
+    const observer = new MutationObserver((mutations) => {
+        injectRewindButtons();
     });
 
     observer.observe(document.body, {

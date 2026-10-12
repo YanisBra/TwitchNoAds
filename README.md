@@ -6,7 +6,6 @@ Chrome extension in **Manifest V3** designed to bypass and block 100% of ads on 
 
 ## 🎯 Features
 * **Ultra-Reliable Ad Blocking:** Uses the `video-swap-new` method to intercept Twitch Web Workers at the very beginning of page loading (`document_start`), guaranteeing 100% blocking without purple screens. Features a persistent, native-style status badge ("Contournement de pub") on the player during the ad bypass.
-* **High Performance Architecture:** Debounced MutationObservers for player controls, scoped sidebar tracking, and zero-polling reactive channel points claiming ensure minimal CPU/GPU overhead even during high-velocity chats.
 * **Quick Rewind & Live Buttons:**
   * Perfectly integrated into the Twitch video player, naturally positioned between the Play/Pause button and the Volume control.
   * **Customizable Rewind Duration:** Easily adjust the rewind duration from **10s to 30s** (in 5s increments) using a slider in the extension popup. Updates in real-time on the player without refreshing the page!
@@ -79,7 +78,6 @@ Extension Chrome en **Manifest V3** conçue pour contourner et bloquer 100 % des
 
 ## 🎯 Fonctionnalités
 * **Blocage de publicités ultra-fiable :** Utilise la méthode `video-swap-new` pour intercepter les Web Workers Twitch au tout début du chargement de la page (`document_start`), garantissant 100 % de blocage sans écran violet. Intègre un badge d'état natif ("Contournement de pub") qui reste affiché sur le lecteur pendant toute la durée du contournement.
-* **Architecture Haute Performance :** Observateurs DOM avec debounce pour les contrôles du lecteur, ciblage précis de la barre latérale et collecte instantanée des points de chaîne sans polling pour éliminer la charge CPU même sur les chats à fort trafic.
 * **Boutons de Retour Rapide & Direct (Live) :**
   * Parfaitement intégrés au lecteur vidéo Twitch, positionnés de façon naturelle entre le bouton Play/Pause et le contrôle de Volume.
   * **Durée de retour arrière personnalisable :** Ajustez facilement la durée de retour en arrière de **10s à 30s** (par paliers de 5s) via un curseur dans le popup de l'extension. Se met à jour en temps réel sur le lecteur sans rafraîchir la page !
